@@ -1,27 +1,42 @@
 package com.Device.ConfigurationSoftware.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 
 @Entity
 public class Device {
-
     @Id
-    private Long pin_code;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long Id;
+    private String pin_code;
     private String status;
     private int temperature;
+
+    private String encryptKey;
 
     public Device() {
     }
 
-    public Device(Long pin_code, String status, int temperature) {
+    public Device(String pin_code, String status, int temperature) {
         this.pin_code = pin_code;
         this.status = status;
         this.temperature = temperature;
     }
 
-    public void setPin_code(Long pin_code) {
+    @JsonIgnore
+    public String getEncryptKey() {
+        return encryptKey;
+    }
+
+    public void setEncryptKey(String encryptKey) {
+        this.encryptKey = encryptKey;
+    }
+
+    public void setPin_code(String pin_code) {
         this.pin_code = pin_code;
     }
 
@@ -33,7 +48,15 @@ public class Device {
         this.temperature = temperature;
     }
 
-    public Long getPin_code() {
+    public Long getId() {
+        return Id;
+    }
+
+    public void setId(Long id) {
+        Id = id;
+    }
+
+    public String getPin_code() {
         return pin_code;
     }
 
