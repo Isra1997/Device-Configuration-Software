@@ -1,5 +1,6 @@
 package com.Device.ConfigurationSoftware.controller;
 
+import com.Device.ConfigurationSoftware.dto.DeviceDTO;
 import com.Device.ConfigurationSoftware.entity.Device;
 import com.Device.ConfigurationSoftware.exceptions.DeviceException;
 import com.Device.ConfigurationSoftware.service.DeviceService;
@@ -24,45 +25,45 @@ public class DeviceController {
 
 
     @GetMapping("/device")
-    public ResponseEntity<List<Device>> getAllDevices(){
-        return new ResponseEntity<>(deviceService.getAllDevices(), HttpStatus.OK);
+    public ResponseEntity<DeviceDTO> getAllDevices(){
+        return new ResponseEntity<>(new DeviceDTO(deviceService.getAllDevices()), HttpStatus.OK);
     }
 
     @PostMapping("/device")
-    public ResponseEntity addDevice(@RequestBody Device newDevice) {
+    public ResponseEntity<DeviceDTO> addDevice(@RequestBody Device newDevice) {
         try {
             Device addedDevice = deviceService.addDevice(newDevice);
-            return new ResponseEntity<>(addedDevice, HttpStatus.OK);
+            return new ResponseEntity<>(new DeviceDTO(List.of(addedDevice)), HttpStatus.CREATED);
         } catch (DeviceException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new DeviceDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PostMapping("/configure/{pin_code}")
-    public ResponseEntity configureDevice(@PathVariable Long id){
+    @PostMapping("/configure/{id}")
+    public ResponseEntity<DeviceDTO> configureDevice(@PathVariable Long id){
         try {
-            return new ResponseEntity<>(deviceService.configureDevice(id), HttpStatus.OK);
+            return new ResponseEntity<>(new DeviceDTO(List.of(deviceService.configureDevice(id))), HttpStatus.OK);
         } catch (DeviceException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new DeviceDTO(e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
-    @DeleteMapping("/device/{pin_code}")
-    public ResponseEntity<String> deleteDevice(@PathVariable Long pin_code){
+    @DeleteMapping("/device/{id}")
+    public ResponseEntity<DeviceDTO> deleteDevice(@PathVariable Long id){
         try {
-            deviceService.deleteDevice(pin_code);
+            deviceService.deleteDevice(id);
         } catch (DeviceException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new DeviceDTO(e.getMessage()), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity("Device deleted successfully.", HttpStatus.OK);
+        return new ResponseEntity<>(new DeviceDTO("Device deleted successfully."), HttpStatus.OK);
     }
 
     @PutMapping("/device")
-    public ResponseEntity<String> editDevice(@RequestBody Device newDevice){
+    public ResponseEntity<DeviceDTO> editDevice(@RequestBody Device newDevice){
         try {
-            return new ResponseEntity(deviceService.updateDevice(newDevice), HttpStatus.OK);
+            return new ResponseEntity<>(new DeviceDTO(List.of(deviceService.updateDevice(newDevice))), HttpStatus.OK);
         } catch (DeviceException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new DeviceDTO(e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
