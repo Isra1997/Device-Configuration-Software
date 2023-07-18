@@ -4,7 +4,6 @@ import com.Device.ConfigurationSoftware.dto.DeviceDTO;
 import com.Device.ConfigurationSoftware.entity.Device;
 import com.Device.ConfigurationSoftware.exceptions.DeviceException;
 import com.Device.ConfigurationSoftware.service.DeviceService;
-import com.Device.ConfigurationSoftware.service.EncryptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +17,7 @@ import java.util.List;
 public class DeviceController {
     @Autowired
     DeviceService deviceService;
-    @Autowired
-    EncryptionService encryptionService;
+
 
 
 
