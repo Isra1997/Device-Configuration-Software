@@ -5,15 +5,14 @@ import com.Device.ConfigurationSoftware.entity.Device;
 import com.Device.ConfigurationSoftware.exceptions.DeviceException;
 import com.Device.ConfigurationSoftware.service.DeviceService;
 import com.Device.ConfigurationSoftware.service.EncryptionService;
-import org.hashids.Hashids;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Comparator;
+
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @RestController
 public class DeviceController {

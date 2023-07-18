@@ -78,7 +78,9 @@ public class DeviceService {
 
     public Device updateDevice(Device newDevice) throws DeviceException {
         if(getDeviceById(newDevice.getId()).isPresent()){
-            return deviceRepository.save(newDevice);
+            Device updatedDevice = deviceRepository.save(newDevice);
+            updatedDevice.setPin_code(encryptionService.decryptValue(updatedDevice.getPin_code(), updatedDevice.getEncryptKey()));
+            return updatedDevice;
         }else {
             throw new DeviceException("Device not found.");
         }
