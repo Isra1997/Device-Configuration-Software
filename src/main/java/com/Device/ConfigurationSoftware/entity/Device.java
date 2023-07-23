@@ -1,13 +1,11 @@
 package com.Device.ConfigurationSoftware.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 
 @Entity
+@Table(name = "devices")
 public class Device {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

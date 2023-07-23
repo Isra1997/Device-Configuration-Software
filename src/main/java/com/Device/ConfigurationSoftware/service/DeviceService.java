@@ -18,7 +18,7 @@ public class DeviceService {
 
 
     public List<Device> getAllDevices(){
-        List<Device> allDevices = (List<Device>) deviceRepository.findAll();
+        List<Device> allDevices = deviceRepository.findAll();
         // sorting the devices according to the device id
         allDevices = allDevices.stream()
                 .peek( device -> device.setPin_code(encryptionService.decryptValue(device.getPin_code(),device.getEncryptKey())))
@@ -33,7 +33,7 @@ public class DeviceService {
 
     public Optional<Device> getDeviceByPinCode(String pin_code)
     {
-        List<Device> allDevices = (List<Device>) deviceRepository.findAll();
+        List<Device> allDevices = deviceRepository.findAll();
         // sorting the devices according to the device id
         return allDevices.stream()
                 .filter(device -> encryptionService.decryptValue(device.getPin_code(),device.getEncryptKey()).equals(pin_code)).findFirst();
@@ -53,16 +53,9 @@ public class DeviceService {
             throw new DeviceException("A device with the given pin code already exists.");
         }else {
             // generate a random key
-            SecureRandom secureRandom = new SecureRandom();
-            byte [] salt = new byte[16];
-            secureRandom.nextBytes(salt);
-            String key = Base64.getEncoder().encodeToString(salt);
-            // encrypt the pin_code to be stored in the database
-            String hashedPin_code= encryptionService.encryptValue(newDevice.getPin_code(), key);
-            newDevice.setPin_code(hashedPin_code);
-            newDevice.setEncryptKey(key);
+            Device encDevice = encrypt_key(newDevice);
             //add the device to the database
-            Device addedDevice = deviceRepository.save(newDevice);
+            Device addedDevice = deviceRepository.save(encDevice);
             addedDevice.setPin_code(encryptionService.decryptValue(addedDevice.getPin_code(),addedDevice.getEncryptKey()));
             return addedDevice;
         }
@@ -78,12 +71,26 @@ public class DeviceService {
 
     public Device updateDevice(Device newDevice) throws DeviceException {
         if(getDeviceById(newDevice.getId()).isPresent()){
-            Device updatedDevice = deviceRepository.save(newDevice);
-            updatedDevice.setPin_code(encryptionService.decryptValue(updatedDevice.getPin_code(), updatedDevice.getEncryptKey()));
+            Device encDevice = encrypt_key(newDevice);
+            Device updatedDevice = deviceRepository.save(encDevice);
+            newDevice.setPin_code(encryptionService.decryptValue(updatedDevice.getPin_code(), updatedDevice.getEncryptKey()));
             return updatedDevice;
         }else {
             throw new DeviceException("Device not found.");
         }
+    }
+
+    private Device encrypt_key(Device newDevice) {
+        // generate a random key
+        SecureRandom secureRandom = new SecureRandom();
+        byte [] salt = new byte[16];
+        secureRandom.nextBytes(salt);
+        String key = Base64.getEncoder().encodeToString(salt);
+        // encrypt the pin_code to be stored in the database
+        String hashedPin_code= encryptionService.encryptValue(newDevice.getPin_code(), key);
+        newDevice.setPin_code(hashedPin_code);
+        newDevice.setEncryptKey(key);
+        return newDevice;
     }
 
     public Device configureDevice(Long id) throws DeviceException {
