@@ -1,0 +1,1 @@
+INSERT INTO devices (id, pin_code, status, temperature, encrypt_key) VALUES (1 , '1234567', 'READY' , 1 , 'testKey');
